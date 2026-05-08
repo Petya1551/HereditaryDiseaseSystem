@@ -1,0 +1,186 @@
+:root {
+    /* Sidebar & Navigation */
+    --sidebar-bg: #1a333d; /* Deep Slate Blue-Green */
+    --sidebar-header: #005f6b; /* Dark Teal Top Bar */
+    --sidebar-active: #00b2a9; /* Bright Cyan/Teal Active State */
+    --sidebar-text: #ffffff; /* White text for dark bg */
+    --sidebar-text-muted: #a0aec0; /* Light gray for sub-items */
+    /* Content Area */
+    --bg-light: #f4f7f9;
+    --primary: #00b2a9; /* Matching the active teal */
+    --border-color: #e2e8f0;
+}
+
+body {
+    background-color: var(--bg-light);
+    color: var(--text-main);
+    font-family: 'Inter', -apple-system, sans-serif;
+}
+
+/* Layout Wrapper */
+.app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 280px;
+    background: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    /* ADD THESE */
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    z-index: 1030; /* Ensures it is above the dashboard content */
+}
+
+/* The "Final Billing" Header */
+.sidebar-top-bar {
+    background: var(--sidebar-header);
+    color: white;
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar .nav-link {
+    color: var(--sidebar-text-muted);
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+    border-left: 4px solid transparent;
+    transition: all 0.2s ease;
+    /* ADD THIS */
+    position: relative;
+    z-index: 1031;
+}
+
+.sidebar .nav-link:hover {
+    color: var(--sidebar-text);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Active State - Matching the Cyan tab in your image */
+.sidebar .nav-link.active {
+    background: var(--sidebar-active) !important;
+    color: white !important;
+    position: relative;
+    font-weight: 500;
+}
+
+/* The little circular handle seen in your image */
+.sidebar .nav-link.active::after {
+    content: ":::";
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--sidebar-active);
+    color: white;
+    width: 24px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    letter-spacing: -1px;
+}
+
+.main-content {
+    flex: 1;
+    padding: 2rem;
+}
+
+/* Cards & Tables */
+.card-master {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    padding: 1.5rem;
+}
+
+.table-custom {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+    .table-custom th {
+        color: var(--text-muted);
+        font-weight: 500;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        padding: 1rem;
+    }
+
+    .table-custom tr {
+        background: white;
+        transition: transform 0.2s;
+    }
+
+    .table-custom td {
+        padding: 1rem;
+        border-top: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+/* Buttons */
+.btn-primary-custom {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.form-control {
+    border: 1px solid var(--border-color);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 4px rgba(0, 85, 255, 0.1);
+    border-color: var(--primary);
+}
+
+/* Dashboard Specific Styles */
+.dashboard-stat-card {
+    border-radius: 12px;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+    overflow: hidden;
+}
+
+    .dashboard-stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+.dashboard-icon-sq {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.dashboard-gif-container {
+    width: 100%;
+    max-width: 150px; /* Adjust based on how large you want it */
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 8px;
+    mix-blend-mode: multiply; /* Optional: helps white-background GIFs blend into light gray cards */
+}

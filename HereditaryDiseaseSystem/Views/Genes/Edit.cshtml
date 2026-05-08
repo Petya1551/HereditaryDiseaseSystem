@@ -1,0 +1,33 @@
+﻿@model HereditaryDiseaseSystem.Models.Gene
+@{
+    ViewData["Title"] = "Edit Genetic Record";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card-master">
+            <h5 class="mb-4 border-bottom pb-2">Modify Gene Mapping</h5>
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-3">
+                    <label asp-for="Symbol" class="form-label fw-medium">Gene Symbol</label>
+                    <input asp-for="Symbol" class="form-control" />
+                    <span asp-validation-for="Symbol" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="ChromosomeLocation" class="form-label fw-medium">Location</label>
+                    <input asp-for="ChromosomeLocation" class="form-control" />
+                    <span asp-validation-for="ChromosomeLocation" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary-custom">Save Changes</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

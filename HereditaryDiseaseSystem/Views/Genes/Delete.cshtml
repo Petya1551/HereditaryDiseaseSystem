@@ -1,0 +1,29 @@
+﻿@model HereditaryDiseaseSystem.Models.Gene
+@{
+    ViewData["Title"] = "Remove Genetic Record";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card-master border-danger">
+            <div class="text-center mb-4">
+                <div class="text-danger fs-1 mb-2">⚠️</div>
+                <h4 class="fw-bold">Confirm Deletion</h4>
+                <p class="text-muted">You are about to remove this gene from the database.</p>
+            </div>
+
+            <div class="bg-light rounded p-3 mb-4 text-center">
+                <span class="d-block text-muted small">Gene Symbol</span>
+                <strong class="fs-5">@Html.DisplayFor(model => model.Symbol)</strong>
+            </div>
+
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="Id" />
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-danger">Delete Permanently</button>
+                    <a asp-action="Index" class="btn btn-link text-muted">Go Back</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

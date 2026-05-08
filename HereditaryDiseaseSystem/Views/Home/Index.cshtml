@@ -1,0 +1,120 @@
+﻿@{
+    ViewData["Title"] = "System Overview";
+    int diseaseCount = 142;
+    int geneCount = 89;
+    int phenotypeCount = 67;
+}
+
+<div class="row mb-4 align-items-center">
+    <div class="col-md-8">
+        <h1 class="display-6 fw-bold">Welcome back</h1>
+        <p class="text-muted fs-5">Hereditary Diseases System (HDS) Clinical Data Portal.</p>
+    </div>
+    <div class="col-md-4 text-center">
+        <div class="card card-master p-3 shadow-none border-0 bg-transparent">
+            <div class="d-flex justify-content-center align-items-center" style="height: 180px;">
+                <img src="~/images/dna-visual.gif"
+                     alt="DNA Visualization"
+                     class="img-fluid"
+                     style="max-height: 100%; border-radius: 12px; mix-blend-mode: multiply;" />
+            </div>
+            <div class="small text-muted mt-2 fw-medium">HDS Active Database</div>
+        </div>
+    </div>
+</div>
+
+<h5 class="fw-bold text-uppercase text-muted mb-3" style="font-size: 0.8rem; letter-spacing: 1px;">
+    System Statistics
+</h5>
+
+<div class="row mb-5 g-4">
+    <div class="col-md-4">
+        <div class="dashboard-stat-card p-3 d-flex align-items-center gap-3 position-relative">
+            <div class="dashboard-icon-sq bg-danger-subtle text-danger">
+                <i class="bi bi-heart-pulse"></i>
+            </div>
+            <div>
+                <div class="text-muted small fw-medium">Tracked Diseases</div>
+                <div class="fs-2 fw-bold text-dark">@diseaseCount</div>
+            </div>
+            <a asp-controller="Diseases" asp-action="Index" class="stretched-link"></a>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="dashboard-stat-card p-3 d-flex align-items-center gap-3 position-relative">
+            <div class="dashboard-icon-sq bg-primary-subtle text-primary">
+                <i class="bi bi-diagram-3-fill"></i>
+            </div>
+            <div>
+                <div class="text-muted small fw-medium">Mapped Genes</div>
+                <div class="fs-2 fw-bold text-dark">@geneCount</div>
+            </div>
+            <a asp-controller="Genes" asp-action="Index" class="stretched-link"></a>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="dashboard-stat-card p-3 d-flex align-items-center gap-3 position-relative">
+            <div class="dashboard-icon-sq bg-success-subtle text-success">
+                <i class="bi bi-person-bounding-box"></i>
+            </div>
+            <div>
+                <div class="text-muted small fw-medium">Log Phenotypes</div>
+                <div class="fs-2 fw-bold text-dark">@phenotypeCount</div>
+            </div>
+            <a asp-controller="Phenotypes" asp-action="Index" class="stretched-link"></a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card-master h-100">
+            <h6 class="fw-bold mb-3">Quick Actions</h6>
+            <div class="d-grid gap-2">
+                <a asp-controller="Diseases" asp-action="Create" class="btn btn-outline-primary btn-sm text-start">
+                    + Register New Disease
+                </a>
+                <a asp-controller="Genes" asp-action="Create" class="btn btn-outline-primary btn-sm text-start">
+                    + Map Gene Sequence
+                </a>
+                <a asp-controller="Phenotypes" asp-action="Create" class="btn btn-outline-primary btn-sm text-start">
+                    + Log New Observation
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8 mb-4">
+        <div class="card-master h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold m-0">Latest Disease Entries</h6>
+                <a asp-controller="Diseases" asp-action="Index" class="small text-decoration-none">View All</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-sm table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="small text-muted">ID</th>
+                            <th class="small text-muted">Disease Name</th>
+                            <th class="small text-muted">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>D-092</td>
+                            <td><span class="fw-bold text-primary">Cystic Fibrosis</span></td>
+                            <td><a asp-controller="Diseases" asp-action="Details" class="text-info small">View</a></td>
+                        </tr>
+                        <tr>
+                            <td>D-091</td>
+                            <td><span class="fw-bold text-primary">Huntington's Disease</span></td>
+                            <td><a asp-controller="Diseases" asp-action="Details" class="text-info small">View</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

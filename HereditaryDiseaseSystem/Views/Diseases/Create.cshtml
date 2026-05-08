@@ -1,0 +1,29 @@
+﻿@model HereditaryDiseaseSystem.Models.Disease
+@{
+    ViewData["Title"] = "New Disease Entry";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card-master">
+            <h5 class="mb-4 border-bottom pb-2">Disease Details</h5>
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label fw-medium">Disease Name</label>
+                    <input asp-for="Name" class="form-control" placeholder="e.g. Huntington's Disease" />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+                <div class="mb-4">
+                    <label asp-for="Description" class="form-label fw-medium">Description</label>
+                    <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter clinical description..."></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary-custom">Create Record</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
