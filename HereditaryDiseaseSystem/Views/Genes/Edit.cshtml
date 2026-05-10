@@ -1,33 +1,136 @@
 ﻿@model HereditaryDiseaseSystem.Models.Gene
+
 @{
     ViewData["Title"] = "Edit Genetic Record";
 }
 
 <div class="row justify-content-center">
     <div class="col-md-6">
+
         <div class="card-master">
-            <h5 class="mb-4 border-bottom pb-2">Modify Gene Mapping</h5>
+
+            <h5 class="mb-4 border-bottom pb-2">
+                Modify Gene Mapping
+            </h5>
+
             <form asp-action="Edit">
-                <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger small">
+                </div>
+
                 <input type="hidden" asp-for="Id" />
 
+                <!-- Symbol -->
                 <div class="mb-3">
-                    <label asp-for="Symbol" class="form-label fw-medium">Gene Symbol</label>
-                    <input asp-for="Symbol" class="form-control" />
-                    <span asp-validation-for="Symbol" class="text-danger small"></span>
+
+                    <label asp-for="Symbol"
+                           class="form-label fw-medium">
+                        Gene Symbol
+                    </label>
+
+                    <input asp-for="Symbol"
+                           class="form-control" />
+
+                    <span asp-validation-for="Symbol"
+                          class="text-danger small">
+                    </span>
+
                 </div>
 
+                <!-- Chromosome -->
+                <div class="mb-3">
+
+                    <label asp-for="ChromosomeLocation"
+                           class="form-label fw-medium">
+                        Chromosome Location
+                    </label>
+
+                    <input asp-for="ChromosomeLocation"
+                           class="form-control" />
+
+                    <span asp-validation-for="ChromosomeLocation"
+                          class="text-danger small">
+                    </span>
+
+                </div>
+
+                <!-- Diseases -->
+                <div class="mb-3">
+
+                    <label class="form-label fw-medium">
+                        Related Diseases
+                    </label>
+
+                    <select name="selectedDiseases"
+                            class="form-control"
+                            multiple>
+
+                        @foreach (var disease in ViewBag.Diseases)
+                        {
+                            var isSelected = Model.GeneDiseases
+                            .Any(gd => gd.DiseaseId == disease.Id);
+
+                            <option value="@disease.Id"
+                                    selected="@isSelected">
+                                @disease.Name
+                            </option>
+                        }
+
+                    </select>
+
+                </div>
+
+                <!-- Phenotypes -->
                 <div class="mb-4">
-                    <label asp-for="ChromosomeLocation" class="form-label fw-medium">Location</label>
-                    <input asp-for="ChromosomeLocation" class="form-control" />
-                    <span asp-validation-for="ChromosomeLocation" class="text-danger small"></span>
+
+                    <label class="form-label fw-medium">
+                        Related Phenotypes
+                    </label>
+
+                    <select name="selectedPhenotypes"
+                            class="form-control"
+                            multiple>
+
+                        @foreach (var phenotype in ViewBag.Phenotypes)
+                        {
+                            var isSelected = Model.GenePhenotypes
+                            .Any(gp => gp.PhenotypeId == phenotype.Id);
+
+                            <option value="@phenotype.Id"
+                                    selected="@isSelected">
+                                @phenotype.Name
+                            </option>
+                        }
+
+                    </select>
+
                 </div>
 
+                <!-- Buttons -->
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary-custom">Save Changes</button>
-                    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+
+                    <button type="submit"
+                            class="btn btn-primary-custom">
+                        Save Changes
+                    </button>
+
+                    <a asp-action="Index"
+                       class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+
                 </div>
+
             </form>
+
         </div>
+
     </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

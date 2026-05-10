@@ -24,7 +24,12 @@ namespace HereditaryDiseaseSystem.Controllers
         // GET: Genes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Genes.ToListAsync());
+            var genes = await _context.Genes
+                .Include(g => g.GeneDiseases)
+                .Include(g => g.GenePhenotypes)
+                .ToListAsync();
+
+            return View(genes);
         }
 
         // GET: Genes/Details/5
@@ -36,7 +41,12 @@ namespace HereditaryDiseaseSystem.Controllers
             }
 
             var gene = await _context.Genes
+                .Include(g => g.GeneDiseases)
+                    .ThenInclude(gd => gd.Disease)
+                .Include(g => g.GenePhenotypes)
+                    .ThenInclude(gp => gp.Phenotype)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (gene == null)
             {
                 return NotFound();
@@ -49,6 +59,9 @@ namespace HereditaryDiseaseSystem.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
+            ViewBag.Diseases = _context.Diseases.ToList();
+            ViewBag.Phenotypes = _context.Phenotypes.ToList();
+
             return View();
         }
 
@@ -58,14 +71,41 @@ namespace HereditaryDiseaseSystem.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create([Bind("Id,Symbol,ChromosomeLocation")] Gene gene)
+        public async Task<IActionResult> Create(
+            Gene gene,
+            int[] selectedDiseases,
+            int[] selectedPhenotypes)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(gene);
+                // Save GeneDisease relations
+                foreach (var diseaseId in selectedDiseases)
+                {
+                    gene.GeneDiseases.Add(new GeneDisease
+                    {
+                        DiseaseId = diseaseId
+                    });
+                }
+
+                // Save GenePhenotype relations
+                foreach (var phenotypeId in selectedPhenotypes)
+                {
+                    gene.GenePhenotypes.Add(new GenePhenotype
+                    {
+                        PhenotypeId = phenotypeId
+                    });
+                }
+
+                _context.Genes.Add(gene);
+
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.Diseases = _context.Diseases.ToList();
+            ViewBag.Phenotypes = _context.Phenotypes.ToList();
+
             return View(gene);
         }
 
@@ -78,11 +118,19 @@ namespace HereditaryDiseaseSystem.Controllers
                 return NotFound();
             }
 
-            var gene = await _context.Genes.FindAsync(id);
+            var gene = await _context.Genes
+                .Include(g => g.GeneDiseases)
+                .Include(g => g.GenePhenotypes)
+                .FirstOrDefaultAsync(g => g.Id == id);
+
             if (gene == null)
             {
                 return NotFound();
             }
+
+            ViewBag.Diseases = _context.Diseases.ToList();
+            ViewBag.Phenotypes = _context.Phenotypes.ToList();
+
             return View(gene);
         }
 
@@ -92,9 +140,23 @@ namespace HereditaryDiseaseSystem.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Symbol,ChromosomeLocation")] Gene gene)
+        public async Task<IActionResult> Edit(
+            int id,
+            Gene gene,
+            int[] selectedDiseases,
+            int[] selectedPhenotypes)
         {
             if (id != gene.Id)
+            {
+                return NotFound();
+            }
+
+            var existingGene = await _context.Genes
+                .Include(g => g.GeneDiseases)
+                .Include(g => g.GenePhenotypes)
+                .FirstOrDefaultAsync(g => g.Id == id);
+
+            if (existingGene == null)
             {
                 return NotFound();
             }
@@ -103,8 +165,37 @@ namespace HereditaryDiseaseSystem.Controllers
             {
                 try
                 {
-                    _context.Update(gene);
+                    // Update basic fields
+                    existingGene.Symbol = gene.Symbol;
+                    existingGene.ChromosomeLocation = gene.ChromosomeLocation;
+
+                    // Remove old relationships
+                    existingGene.GeneDiseases.Clear();
+                    existingGene.GenePhenotypes.Clear();
+
+                    // Add new diseases
+                    foreach (var diseaseId in selectedDiseases)
+                    {
+                        existingGene.GeneDiseases.Add(new GeneDisease
+                        {
+                            GeneId = existingGene.Id,
+                            DiseaseId = diseaseId
+                        });
+                    }
+
+                    // Add new phenotypes
+                    foreach (var phenotypeId in selectedPhenotypes)
+                    {
+                        existingGene.GenePhenotypes.Add(new GenePhenotype
+                        {
+                            GeneId = existingGene.Id,
+                            PhenotypeId = phenotypeId
+                        });
+                    }
+
                     await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -112,13 +203,14 @@ namespace HereditaryDiseaseSystem.Controllers
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+
+                    throw;
                 }
-                return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.Diseases = _context.Diseases.ToList();
+            ViewBag.Phenotypes = _context.Phenotypes.ToList();
+
             return View(gene);
         }
 
@@ -132,7 +224,12 @@ namespace HereditaryDiseaseSystem.Controllers
             }
 
             var gene = await _context.Genes
+                .Include(g => g.GeneDiseases)
+                    .ThenInclude(gd => gd.Disease)
+                .Include(g => g.GenePhenotypes)
+                    .ThenInclude(gp => gp.Phenotype)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (gene == null)
             {
                 return NotFound();
@@ -147,13 +244,24 @@ namespace HereditaryDiseaseSystem.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var gene = await _context.Genes.FindAsync(id);
+            var gene = await _context.Genes
+                .Include(g => g.GeneDiseases)
+                .Include(g => g.GenePhenotypes)
+                .FirstOrDefaultAsync(g => g.Id == id);
+
             if (gene != null)
             {
+                // Remove relationships first
+                _context.GeneDiseases.RemoveRange(gene.GeneDiseases);
+
+                _context.GenePhenotypes.RemoveRange(gene.GenePhenotypes);
+
+                // Remove gene
                 _context.Genes.Remove(gene);
+
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
