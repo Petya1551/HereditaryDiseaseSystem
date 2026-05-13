@@ -1,8 +1,7 @@
-﻿@{
+﻿@model HereditaryDiseaseSystem.Models.DashboardViewModel
+
+@{
     ViewData["Title"] = "System Overview";
-    int diseaseCount = 142;
-    int geneCount = 89;
-    int phenotypeCount = 67;
 }
 
 <div class="row mb-4 align-items-center">
@@ -35,7 +34,7 @@
             </div>
             <div>
                 <div class="text-muted small fw-medium">Tracked Diseases</div>
-                <div class="fs-2 fw-bold text-dark">@diseaseCount</div>
+                <div class="fs-2 fw-bold text-dark">@Model.DiseaseCount</div>
             </div>
             <a asp-controller="Diseases" asp-action="Index" class="stretched-link"></a>
         </div>
@@ -48,7 +47,7 @@
             </div>
             <div>
                 <div class="text-muted small fw-medium">Mapped Genes</div>
-                <div class="fs-2 fw-bold text-dark">@geneCount</div>
+                <div class="fs-2 fw-bold text-dark">@Model.GeneCount</div>
             </div>
             <a asp-controller="Genes" asp-action="Index" class="stretched-link"></a>
         </div>
@@ -61,7 +60,7 @@
             </div>
             <div>
                 <div class="text-muted small fw-medium">Log Phenotypes</div>
-                <div class="fs-2 fw-bold text-dark">@phenotypeCount</div>
+                <div class="fs-2 fw-bold text-dark">@Model.PhenotypeCount</div>
             </div>
             <a asp-controller="Phenotypes" asp-action="Index" class="stretched-link"></a>
         </div>
@@ -102,16 +101,27 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>D-092</td>
-                            <td><span class="fw-bold text-primary">Cystic Fibrosis</span></td>
-                            <td><a asp-controller="Diseases" asp-action="Details" class="text-info small">View</a></td>
-                        </tr>
-                        <tr>
-                            <td>D-091</td>
-                            <td><span class="fw-bold text-primary">Huntington's Disease</span></td>
-                            <td><a asp-controller="Diseases" asp-action="Details" class="text-info small">View</a></td>
-                        </tr>
+                        @if (Model.LatestDiseases != null && Model.LatestDiseases.Any())
+                        {
+                            @foreach (var disease in Model.LatestDiseases)
+                            {
+                                <tr>
+                                    <td>D-@disease.Id.ToString("D3")</td>
+                                    <td><span class="fw-bold text-primary">@disease.Name</span></td>
+                                    <td>
+                                        <a asp-controller="Diseases" asp-action="Details" asp-route-id="@disease.Id" class="text-info small">
+                                            View
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="3" class="text-center text-muted small py-3">No entries found in database.</td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
             </div>

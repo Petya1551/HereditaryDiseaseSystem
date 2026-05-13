@@ -21,7 +21,6 @@ namespace HereditaryDiseaseSystem.Controllers
             _context = context;
         }
 
-        // GET: Genes
         public async Task<IActionResult> Index()
         {
             var genes = await _context.Genes
@@ -32,7 +31,6 @@ namespace HereditaryDiseaseSystem.Controllers
             return View(genes);
         }
 
-        // GET: Genes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -55,7 +53,6 @@ namespace HereditaryDiseaseSystem.Controllers
             return View(gene);
         }
 
-        // GET: Genes/Create
         [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
@@ -65,20 +62,23 @@ namespace HereditaryDiseaseSystem.Controllers
             return View();
         }
 
-        // POST: Genes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create(
-            Gene gene,
-            int[] selectedDiseases,
-            int[] selectedPhenotypes)
+        public async Task<IActionResult> Create(Gene gene, int[] selectedDiseases, int[] selectedPhenotypes)
         {
+            bool geneExists = await _context.Genes
+                .AnyAsync(g => g.Symbol == gene.Symbol);
+
+            if (geneExists)
+            {
+                ModelState.AddModelError(
+                    "Symbol",
+                    "Gene with this symbol already exists.");
+            }
+
             if (ModelState.IsValid)
             {
-                // Save GeneDisease relations
                 foreach (var diseaseId in selectedDiseases)
                 {
                     gene.GeneDiseases.Add(new GeneDisease
@@ -87,7 +87,6 @@ namespace HereditaryDiseaseSystem.Controllers
                     });
                 }
 
-                // Save GenePhenotype relations
                 foreach (var phenotypeId in selectedPhenotypes)
                 {
                     gene.GenePhenotypes.Add(new GenePhenotype
@@ -109,7 +108,6 @@ namespace HereditaryDiseaseSystem.Controllers
             return View(gene);
         }
 
-        // GET: Genes/Edit/5
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -134,9 +132,6 @@ namespace HereditaryDiseaseSystem.Controllers
             return View(gene);
         }
 
-        // POST: Genes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -145,10 +140,20 @@ namespace HereditaryDiseaseSystem.Controllers
             Gene gene,
             int[] selectedDiseases,
             int[] selectedPhenotypes)
-        {
+        {            
             if (id != gene.Id)
             {
                 return NotFound();
+            }
+
+            bool duplicateGene = await _context.Genes
+                .AnyAsync(g => g.Symbol == gene.Symbol && g.Id != gene.Id);
+
+            if (duplicateGene)
+            {
+                ModelState.AddModelError(
+                    "Symbol",
+                    "Another gene with this symbol already exists.");
             }
 
             var existingGene = await _context.Genes
@@ -165,15 +170,12 @@ namespace HereditaryDiseaseSystem.Controllers
             {
                 try
                 {
-                    // Update basic fields
                     existingGene.Symbol = gene.Symbol;
                     existingGene.ChromosomeLocation = gene.ChromosomeLocation;
 
-                    // Remove old relationships
                     existingGene.GeneDiseases.Clear();
                     existingGene.GenePhenotypes.Clear();
 
-                    // Add new diseases
                     foreach (var diseaseId in selectedDiseases)
                     {
                         existingGene.GeneDiseases.Add(new GeneDisease
@@ -183,7 +185,6 @@ namespace HereditaryDiseaseSystem.Controllers
                         });
                     }
 
-                    // Add new phenotypes
                     foreach (var phenotypeId in selectedPhenotypes)
                     {
                         existingGene.GenePhenotypes.Add(new GenePhenotype
@@ -214,7 +215,6 @@ namespace HereditaryDiseaseSystem.Controllers
             return View(gene);
         }
 
-        // GET: Genes/Delete/5
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -238,7 +238,6 @@ namespace HereditaryDiseaseSystem.Controllers
             return View(gene);
         }
 
-        // POST: Genes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -251,12 +250,10 @@ namespace HereditaryDiseaseSystem.Controllers
 
             if (gene != null)
             {
-                // Remove relationships first
                 _context.GeneDiseases.RemoveRange(gene.GeneDiseases);
 
                 _context.GenePhenotypes.RemoveRange(gene.GenePhenotypes);
 
-                // Remove gene
                 _context.Genes.Remove(gene);
 
                 await _context.SaveChangesAsync();

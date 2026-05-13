@@ -1,13 +1,12 @@
 :root {
     /* Sidebar & Navigation */
-    --sidebar-bg: #1a333d; /* Deep Slate Blue-Green */
-    --sidebar-header: #005f6b; /* Dark Teal Top Bar */
-    --sidebar-active: #00b2a9; /* Bright Cyan/Teal Active State */
-    --sidebar-text: #ffffff; /* White text for dark bg */
-    --sidebar-text-muted: #a0aec0; /* Light gray for sub-items */
-    /* Content Area */
+    --sidebar-bg: #1a333d; 
+    --sidebar-header: #005f6b; 
+    --sidebar-active: #00b2a9;
+    --sidebar-text: #ffffff; 
+    --sidebar-text-muted: #a0aec0; 
     --bg-light: #f4f7f9;
-    --primary: #00b2a9; /* Matching the active teal */
+    --primary: #00b2a9; 
     --border-color: #e2e8f0;
 }
 
@@ -32,7 +31,7 @@ body {
     position: sticky;
     top: 0;
     height: 100vh;
-    z-index: 1030; /* Ensures it is above the dashboard content */
+    z-index: 1030; 
 }
 
 /* The "Final Billing" Header */
@@ -52,7 +51,6 @@ body {
     font-size: 0.9rem;
     border-left: 4px solid transparent;
     transition: all 0.2s ease;
-    /* ADD THIS */
     position: relative;
     z-index: 1031;
 }
@@ -177,10 +175,10 @@ body {
 
 .dashboard-gif-container {
     width: 100%;
-    max-width: 150px; /* Adjust based on how large you want it */
+    max-width: 150px; 
     height: auto;
     display: block;
     margin: 0 auto;
     border-radius: 8px;
-    mix-blend-mode: multiply; /* Optional: helps white-background GIFs blend into light gray cards */
+    mix-blend-mode: multiply; 
 }

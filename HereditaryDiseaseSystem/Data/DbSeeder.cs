@@ -12,7 +12,6 @@ namespace HereditaryDiseaseSystem.Data
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
-            // 1. Roles
             string[] roles = { "Admin", "User" };
 
             foreach (var role in roles)
@@ -23,7 +22,6 @@ namespace HereditaryDiseaseSystem.Data
                 }
             }
 
-            // 2. Admin user
             var adminEmail = "admin@admin.com";
             var adminPassword = "Admin123!";
 
