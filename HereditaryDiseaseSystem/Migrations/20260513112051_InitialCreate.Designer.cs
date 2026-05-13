@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HereditaryDiseaseSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260513110349_InitialCreate")]
+    [Migration("20260513112051_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
